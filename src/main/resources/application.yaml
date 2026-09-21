@@ -3,14 +3,13 @@ spring:
     name: demo
 
   datasource:
-    url: jdbc:h2:mem:trading
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    url: jdbc:mysql://localhost:3306/trading
+    username: trading
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
 
   h2:
