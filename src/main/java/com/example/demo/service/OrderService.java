@@ -4,6 +4,10 @@ import com.example.demo.dto.CreateOrderRequest;
 import com.example.demo.dto.OrderResponse;
 import com.example.demo.entity.OrderEntity;
 import com.example.demo.repository.OrderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +83,35 @@ public class OrderService {
     public void delete(Long id) {
         OrderEntity order = getEntity(id);
         repository.delete(order);
+    }
+
+    public Page<OrderResponse> search(
+            String symbol,
+            int page,
+            int size
+    ) {
+        if (page < 0 || size < 1 || size > 100) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid pagination parameters"
+            );
+        }
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
+
+        Page<OrderEntity> result;
+
+        if (symbol == null || symbol.isBlank()) {
+            result = repository.findAll(pageable);
+        } else {
+            result = repository.findBySymbol(symbol.trim(), pageable);
+        }
+
+        return result.map(this::toResponse);
     }
 
     @Transactional

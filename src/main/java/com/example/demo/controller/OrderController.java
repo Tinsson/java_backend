@@ -5,6 +5,7 @@ import com.example.demo.dto.OrderResponse;
 import com.example.demo.model.Order;
 import com.example.demo.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,14 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderResponse> findAll(
-            @RequestParam(required = false) String symbol
+    public Page<OrderResponse> findAll(
+            @RequestParam(required = false) String symbol,
+
+            @RequestParam(defaultValue = "0") int page,
+
+            @RequestParam(defaultValue = "10") int size
     ) {
-        if (symbol != null) {
-            return service.findAllBySymbol(symbol);
-        }
-        return service.findAll();
+        return service.search(symbol, page, size);
     }
 
     @GetMapping("/{id}")
