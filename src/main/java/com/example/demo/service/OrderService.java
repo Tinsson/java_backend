@@ -66,6 +66,18 @@ public class OrderService {
             Long id,
             CreateOrderRequest request
     ) {
+        if (
+                request.price() == null ||
+                request.quantity() == null ||
+                request.price().compareTo(BigDecimal.ZERO) <= 0 ||
+                request.quantity().compareTo(BigDecimal.ZERO) <= 0
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Price or Quantity must be greater than 0"
+            );
+        }
+
         OrderEntity order = getEntity(id);
 
         order.update(
