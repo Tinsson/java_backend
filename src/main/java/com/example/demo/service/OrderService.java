@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CreateOrderRequest;
 import com.example.demo.dto.OrderResponse;
+import com.example.demo.dto.PageResponse;
 import com.example.demo.entity.OrderEntity;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.data.domain.Page;
@@ -85,7 +86,7 @@ public class OrderService {
         repository.delete(order);
     }
 
-    public Page<OrderResponse> search(
+    public PageResponse<OrderResponse> search(
             String symbol,
             int page,
             int size
@@ -108,10 +109,10 @@ public class OrderService {
         if (symbol == null || symbol.isBlank()) {
             result = repository.findAll(pageable);
         } else {
-            result = repository.findBySymbol(symbol.trim(), pageable);
+            result = repository.findBySymbolOrderByIdDesc(symbol.trim(), pageable);
         }
 
-        return result.map(this::toResponse);
+        return PageResponse.from(result.map(this::toResponse));
     }
 
     @Transactional

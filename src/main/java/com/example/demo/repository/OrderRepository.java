@@ -24,8 +24,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
             OrderStatus status
     );
 
-    List<OrderEntity> findBySymbolOrderByIdDesc(
-            String symbol
+    Page<OrderEntity> findBySymbolOrderByIdDesc(
+            String symbol,
+            Pageable pageable
     );
 }
 

@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.CreateOrderRequest;
 import com.example.demo.dto.OrderResponse;
+import com.example.demo.dto.PageResponse;
 import com.example.demo.model.Order;
 import com.example.demo.service.OrderService;
 import jakarta.validation.Valid;
@@ -24,14 +26,14 @@ public class OrderController {
     }
 
     @GetMapping
-    public Page<OrderResponse> findAll(
+    public ApiResponse<PageResponse<OrderResponse>> findAll(
             @RequestParam(required = false) String symbol,
 
             @RequestParam(defaultValue = "0") int page,
 
             @RequestParam(defaultValue = "10") int size
     ) {
-        return service.search(symbol, page, size);
+        return ApiResponse.ok(service.search(symbol, page, size));
     }
 
     @GetMapping("/{id}")
